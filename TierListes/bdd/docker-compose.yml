@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: tierlistes_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${MYSQL_PORT}:3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    networks:
+      - tierlistes_network
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: tierlistes_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - "${PHPMYADMIN_PORT}:80"
+    depends_on:
+      - mysql
+    networks:
+      - tierlistes_network
+
+networks:
+  tierlistes_network:
+    driver: bridge
