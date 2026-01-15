@@ -1,0 +1,44 @@
+<div class="container">
+  <header>
+    <h1>🎯 {{ title }}</h1>
+    <p class="subtitle">Frontend Angular - Architecture Hexagonale</p>
+  </header>
+
+  <div class="status-card success">
+    <h2>Angular fonctionne !</h2>
+    <p>Timestamp : {{ currentTime | date:'medium' }}</p>
+  </div>
+
+  <div class="connections">
+    <h2>Connexions aux services</h2>
+    
+    <div class="service-card">
+      <h3>Backend API (.NET 9)</h3>
+      <a [href]="apiUrl + '/swagger'" target="_blank" class="btn btn-primary">
+        Ouvrir Swagger
+      </a>
+      <a [href]="apiUrl + '/api/health'" target="_blank" class="btn btn-secondary">
+        Test Health
+      </a>
+    </div>
+
+    <div class="service-card">
+      <h3>Base de données (MySQL)</h3>
+      <a [href]="phpmyadminUrl" target="_blank" class="btn btn-primary">
+        Ouvrir phpMyAdmin
+      </a>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <h2>Stack Technique</h2>
+    <ul>
+      <li>Frontend : Angular 18+</li>
+      <li>Backend : .NET 9 (Architecture Hexagonale)</li>
+      <li>Base de données : MySQL 8.0</li>
+      <li>API Documentation : Swagger</li>
+    </ul>
+  </div>
+</div>
+
+<router-outlet></router-outlet>
