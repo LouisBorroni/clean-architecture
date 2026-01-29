@@ -46,5 +46,6 @@ export class HomeComponent implements OnInit {
     }
     this.tierlistService.tiers.set([...this.tierlistService.tiers()]);
     this.tierlistService.unrankedCompanies.set([...this.tierlistService.unrankedCompanies()]);
+    this.tierlistService.saveState();
   }
 }
