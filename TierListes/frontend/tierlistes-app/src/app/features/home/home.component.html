@@ -1,0 +1,17 @@
+<div class="home-container">
+  <header class="header">
+    <h1>TierListes</h1>
+    <div class="user-info">
+      @if (authService.currentUser(); as user) {
+        <span class="username">{{ user.username }}</span>
+        <button class="btn-logout" (click)="logout()">Déconnexion</button>
+      }
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="welcome-card">
+      <h2>Bienvenue sur TierListes</h2>
+    </div>
+  </main>
+</div>
