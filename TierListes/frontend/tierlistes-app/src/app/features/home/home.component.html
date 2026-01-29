@@ -10,8 +10,59 @@
   </header>
 
   <main class="main-content">
-    <div class="welcome-card">
-      <h2>Bienvenue sur TierListes</h2>
-    </div>
+    @if (tierlistService.isLoading()) {
+      <div class="loading">Chargement...</div>
+    } @else {
+      <div class="tierlist-container">
+        <div class="tierlist-header">
+          <h2>Ma Tier List</h2>
+          <button class="btn-reset" (click)="reset()">Réinitialiser</button>
+        </div>
+
+        <div class="tiers">
+          @for (tier of tierlistService.tiers(); track tier.level) {
+            <div class="tier-row">
+              <div class="tier-label" [style.background]="tier.color">
+                {{ tier.label }}
+              </div>
+              <div
+                class="tier-content"
+                cdkDropList
+                [id]="'tier-' + tier.level"
+                [cdkDropListData]="tier.companies"
+                [cdkDropListConnectedTo]="getConnectedLists()"
+                (cdkDropListDropped)="drop($event)"
+              >
+                @for (company of tier.companies; track company.id) {
+                  <div class="company-card" cdkDrag>
+                    <img [src]="company.logoUrl" [alt]="company.name" class="company-logo">
+                    <span class="company-name">{{ company.name }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="unranked-section">
+          <h3>Entreprises à classer</h3>
+          <div
+            class="unranked-list"
+            cdkDropList
+            id="unranked"
+            [cdkDropListData]="tierlistService.unrankedCompanies()"
+            [cdkDropListConnectedTo]="getConnectedLists()"
+            (cdkDropListDropped)="drop($event)"
+          >
+            @for (company of tierlistService.unrankedCompanies(); track company.id) {
+              <div class="company-card" cdkDrag>
+                <img [src]="company.logoUrl" [alt]="company.name" class="company-logo">
+                <span class="company-name">{{ company.name }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
   </main>
 </div>

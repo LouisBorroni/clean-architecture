@@ -23,6 +23,7 @@ public static class DependencyInjection
         var jwtSettings = new JwtSettings();
         configuration.Bind("JwtSettings", jwtSettings);
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+        services.Configure<LogoSettings>(configuration.GetSection("LogoSettings"));
 
         var connectionString = configuration.GetConnectionString("DefaultConnection");
 
@@ -31,10 +32,13 @@ public static class DependencyInjection
         );
 
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ICompanyRepository, CompanyRepository>();
+        services.AddScoped<ITierListRepository, TierListRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+        services.AddSingleton<ILogoUrlGenerator, LogoUrlGenerator>();
 
         services
             .AddAuthentication(options =>
