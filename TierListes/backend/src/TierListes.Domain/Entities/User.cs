@@ -8,6 +8,7 @@ public class User
     public string Username { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime? LastLoginAt { get; set; }
+    public bool HasPaid { get; set; }
 
     private User() { }
 
@@ -26,5 +27,10 @@ public class User
     public void UpdateLastLogin()
     {
         LastLoginAt = DateTime.UtcNow;
+    }
+
+    public void MarkAsPaid()
+    {
+        HasPaid = true;
     }
 }

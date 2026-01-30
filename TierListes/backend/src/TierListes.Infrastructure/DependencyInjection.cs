@@ -26,6 +26,7 @@ public static class DependencyInjection
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
         services.Configure<LogoSettings>(configuration.GetSection("LogoSettings"));
         services.Configure<MinioSettings>(configuration.GetSection("MinioSettings"));
+        services.Configure<StripeSettings>(configuration.GetSection("StripeSettings"));
 
         var minioSettings = new MinioSettings();
         configuration.Bind("MinioSettings", minioSettings);
@@ -50,6 +51,7 @@ public static class DependencyInjection
         services.AddScoped<ICompanyRepository, CompanyRepository>();
         services.AddScoped<ICompanyLogoRepository, CompanyLogoRepository>();
         services.AddScoped<ITierListRepository, TierListRepository>();
+        services.AddScoped<IPaymentHistoryRepository, PaymentHistoryRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
@@ -57,6 +59,7 @@ public static class DependencyInjection
         services.AddSingleton<ILogoUrlGenerator, LogoUrlGenerator>();
         services.AddSingleton<IStorageService, MinioStorageService>();
         services.AddSingleton<IPdfGeneratorService, PdfGeneratorService>();
+        services.AddSingleton<IPaymentService, StripePaymentService>();
 
         services
             .AddAuthentication(options =>

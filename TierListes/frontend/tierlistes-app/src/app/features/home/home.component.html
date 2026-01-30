@@ -10,17 +10,32 @@
   </header>
 
   <main class="main-content">
+    @if (!paymentService.hasPaid()) {
+      <div class="payment-banner">
+        <div class="payment-content">
+          <span class="payment-icon">&#128274;</span>
+          <div class="payment-text">
+            <strong>Débloquez la Tier List</strong>
+            <p>Payez une fois pour créer et organiser votre tier list</p>
+          </div>
+          <button class="btn-pay" (click)="pay()" [disabled]="paymentService.isLoading()">
+            {{ paymentService.isLoading() ? 'Redirection...' : 'Payer maintenant' }}
+          </button>
+        </div>
+      </div>
+    }
+
     @if (tierlistService.isLoading()) {
       <div class="loading">Chargement...</div>
     } @else {
-      <div class="tierlist-container">
+      <div class="tierlist-container" [class.locked]="!paymentService.hasPaid()">
         <div class="tierlist-header">
           <h2>Ma Tier List</h2>
           <div class="header-actions">
-            <button class="btn-export" (click)="exportPdf()" [disabled]="isExporting">
+            <button class="btn-export" (click)="exportPdf()" [disabled]="isExporting || !paymentService.hasPaid()">
               {{ isExporting ? 'Export en cours...' : 'Exporter en PDF' }}
             </button>
-            <button class="btn-reset" (click)="reset()">Réinitialiser</button>
+            <button class="btn-reset" (click)="reset()" [disabled]="!paymentService.hasPaid()">Réinitialiser</button>
           </div>
         </div>
 
@@ -36,10 +51,11 @@
                 [id]="'tier-' + tier.level"
                 [cdkDropListData]="tier.companies"
                 [cdkDropListConnectedTo]="getConnectedLists()"
+                [cdkDropListDisabled]="!paymentService.hasPaid()"
                 (cdkDropListDropped)="drop($event)"
               >
                 @for (company of tier.companies; track company.id) {
-                  <div class="company-card" cdkDrag>
+                  <div class="company-card" cdkDrag [cdkDragDisabled]="!paymentService.hasPaid()">
                     <img [src]="company.logoUrl" [alt]="company.name" class="company-logo">
                     <span class="company-name">{{ company.name }}</span>
                   </div>
@@ -57,10 +73,11 @@
             id="unranked"
             [cdkDropListData]="tierlistService.unrankedCompanies()"
             [cdkDropListConnectedTo]="getConnectedLists()"
+            [cdkDropListDisabled]="!paymentService.hasPaid()"
             (cdkDropListDropped)="drop($event)"
           >
             @for (company of tierlistService.unrankedCompanies(); track company.id) {
-              <div class="company-card" cdkDrag>
+              <div class="company-card" [class.disabled]="!paymentService.hasPaid()" cdkDrag [cdkDragDisabled]="!paymentService.hasPaid()">
                 <img [src]="company.logoUrl" [alt]="company.name" class="company-logo">
                 <span class="company-name">{{ company.name }}</span>
               </div>
