@@ -12,8 +12,8 @@ using TierListes.Infrastructure.Persistence;
 namespace TierListes.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260129222352_AddTierList")]
-    partial class AddTierList
+    [Migration("20260130111933_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,78 +47,30 @@ namespace TierListes.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Companies");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            DisplayOrder = 1,
-                            Domain = "nintendo.com",
-                            Name = "Nintendo"
-                        },
-                        new
-                        {
-                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
-                            DisplayOrder = 2,
-                            Domain = "playstation.com",
-                            Name = "PlayStation"
-                        },
-                        new
-                        {
-                            Id = new Guid("33333333-3333-3333-3333-333333333333"),
-                            DisplayOrder = 3,
-                            Domain = "xbox.com",
-                            Name = "Xbox"
-                        },
-                        new
-                        {
-                            Id = new Guid("44444444-4444-4444-4444-444444444444"),
-                            DisplayOrder = 4,
-                            Domain = "ea.com",
-                            Name = "EA"
-                        },
-                        new
-                        {
-                            Id = new Guid("55555555-5555-5555-5555-555555555555"),
-                            DisplayOrder = 5,
-                            Domain = "ubisoft.com",
-                            Name = "Ubisoft"
-                        },
-                        new
-                        {
-                            Id = new Guid("66666666-6666-6666-6666-666666666666"),
-                            DisplayOrder = 6,
-                            Domain = "activisionblizzard.com",
-                            Name = "Activision Blizzard"
-                        },
-                        new
-                        {
-                            Id = new Guid("77777777-7777-7777-7777-777777777777"),
-                            DisplayOrder = 7,
-                            Domain = "rockstargames.com",
-                            Name = "Rockstar Games"
-                        },
-                        new
-                        {
-                            Id = new Guid("88888888-8888-8888-8888-888888888888"),
-                            DisplayOrder = 8,
-                            Domain = "square-enix.com",
-                            Name = "Square Enix"
-                        },
-                        new
-                        {
-                            Id = new Guid("99999999-9999-9999-9999-999999999999"),
-                            DisplayOrder = 9,
-                            Domain = "capcom.com",
-                            Name = "Capcom"
-                        },
-                        new
-                        {
-                            Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-                            DisplayOrder = 10,
-                            Domain = "epicgames.com",
-                            Name = "Epic Games"
-                        });
+            modelBuilder.Entity("TierListes.Domain.Entities.CompanyLogo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("LogoUrl")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId")
+                        .IsUnique();
+
+                    b.ToTable("CompanyLogos");
                 });
 
             modelBuilder.Entity("TierListes.Domain.Entities.TierList", b =>
@@ -183,6 +135,17 @@ namespace TierListes.Infrastructure.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("TierListes.Domain.Entities.CompanyLogo", b =>
+                {
+                    b.HasOne("TierListes.Domain.Entities.Company", "Company")
+                        .WithOne("Logo")
+                        .HasForeignKey("TierListes.Domain.Entities.CompanyLogo", "CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
             modelBuilder.Entity("TierListes.Domain.Entities.TierList", b =>
                 {
                     b.HasOne("TierListes.Domain.Entities.Company", "Company")
@@ -200,6 +163,11 @@ namespace TierListes.Infrastructure.Migrations
                     b.Navigation("Company");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TierListes.Domain.Entities.Company", b =>
+                {
+                    b.Navigation("Logo");
                 });
 #pragma warning restore 612, 618
         }

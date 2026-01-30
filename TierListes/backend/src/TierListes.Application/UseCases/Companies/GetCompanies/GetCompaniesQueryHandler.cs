@@ -23,14 +23,14 @@ public class GetCompaniesQueryHandler : IRequestHandler<GetCompaniesQuery, Resul
         GetCompaniesQuery request,
         CancellationToken cancellationToken)
     {
-        var companies = await _companyRepository.GetAllAsync(cancellationToken);
+        var companies = await _companyRepository.GetAllWithLogosAsync(cancellationToken);
 
         var companyDtos = companies
             .OrderBy(c => c.DisplayOrder)
             .Select(c => new CompanyDto(
                 c.Id,
                 c.Name,
-                _logoUrlGenerator.GenerateLogoUrl(c.Domain)
+                c.Logo?.LogoUrl ?? _logoUrlGenerator.GenerateLogoUrl(c.Domain)
             ));
 
         return Result<IEnumerable<CompanyDto>>.Success(companyDtos, 200);
