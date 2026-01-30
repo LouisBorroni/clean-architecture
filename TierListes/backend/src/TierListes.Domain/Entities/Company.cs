@@ -7,6 +7,8 @@ public class Company
     public string Domain { get; set; } = string.Empty;
     public int DisplayOrder { get; set; }
 
+    public CompanyLogo? Logo { get; set; }
+
     private Company() { }
 
     public static Company Create(string name, string domain, int displayOrder)

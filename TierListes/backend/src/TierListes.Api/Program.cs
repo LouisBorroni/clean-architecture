@@ -63,8 +63,15 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddApplication();
 
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddScoped<TierListes.Infrastructure.Persistence.DbInitializer>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var initializer = scope.ServiceProvider.GetRequiredService<TierListes.Infrastructure.Persistence.DbInitializer>();
+    await initializer.SeedAsync();
+}
 
 if (app.Environment.IsDevelopment())
 {
