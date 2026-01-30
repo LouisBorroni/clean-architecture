@@ -1,4 +1,5 @@
 using System.Text;
+using Amazon.S3;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +25,20 @@ public static class DependencyInjection
         configuration.Bind("JwtSettings", jwtSettings);
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
         services.Configure<LogoSettings>(configuration.GetSection("LogoSettings"));
+        services.Configure<MinioSettings>(configuration.GetSection("MinioSettings"));
+
+        var minioSettings = new MinioSettings();
+        configuration.Bind("MinioSettings", minioSettings);
+
+        services.AddSingleton<IAmazonS3>(_ =>
+        {
+            var config = new AmazonS3Config
+            {
+                ServiceURL = $"{(minioSettings.UseSSL ? "https" : "http")}://{minioSettings.Endpoint}",
+                ForcePathStyle = true
+            };
+            return new AmazonS3Client(minioSettings.AccessKey, minioSettings.SecretKey, config);
+        });
 
         var connectionString = configuration.GetConnectionString("DefaultConnection");
 
@@ -39,6 +54,8 @@ public static class DependencyInjection
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddSingleton<ILogoUrlGenerator, LogoUrlGenerator>();
+        services.AddSingleton<IStorageService, MinioStorageService>();
+        services.AddSingleton<IPdfGeneratorService, PdfGeneratorService>();
 
         services
             .AddAuthentication(options =>

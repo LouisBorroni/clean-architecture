@@ -1,9 +1,10 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { AuthService } from '../../core/services/auth.service';
 import { TierlistService } from '../../core/services/tierlist.service';
 import { Company } from '../../core/models/tierlist.models';
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-home',
@@ -13,8 +14,12 @@ import { Company } from '../../core/models/tierlist.models';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+  @ViewChild('tierlistCapture') tierlistCapture!: ElementRef<HTMLElement>;
+
   authService = inject(AuthService);
   tierlistService = inject(TierlistService);
+
+  isExporting = false;
 
   ngOnInit(): void {
     this.tierlistService.loadCompanies();
@@ -47,5 +52,36 @@ export class HomeComponent implements OnInit {
     this.tierlistService.tiers.set([...this.tierlistService.tiers()]);
     this.tierlistService.unrankedCompanies.set([...this.tierlistService.unrankedCompanies()]);
     this.tierlistService.saveState();
+  }
+
+  async exportPdf(): Promise<void> {
+    if (!this.tierlistCapture || this.isExporting) return;
+
+    this.isExporting = true;
+
+    try {
+      const canvas = await html2canvas(this.tierlistCapture.nativeElement, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        useCORS: true,
+        allowTaint: true
+      });
+
+      const imageBase64 = canvas.toDataURL('image/png').split(',')[1];
+
+      this.tierlistService.exportPdf(imageBase64).subscribe({
+        next: (response) => {
+          window.open(response.pdfUrl, '_blank');
+          this.isExporting = false;
+        },
+        error: () => {
+          alert('Erreur lors de l\'export du PDF');
+          this.isExporting = false;
+        }
+      });
+    } catch {
+      alert('Erreur lors de la capture de la tier list');
+      this.isExporting = false;
+    }
   }
 }

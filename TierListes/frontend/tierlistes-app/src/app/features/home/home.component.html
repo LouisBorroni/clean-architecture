@@ -16,10 +16,15 @@
       <div class="tierlist-container">
         <div class="tierlist-header">
           <h2>Ma Tier List</h2>
-          <button class="btn-reset" (click)="reset()">Réinitialiser</button>
+          <div class="header-actions">
+            <button class="btn-export" (click)="exportPdf()" [disabled]="isExporting">
+              {{ isExporting ? 'Export en cours...' : 'Exporter en PDF' }}
+            </button>
+            <button class="btn-reset" (click)="reset()">Réinitialiser</button>
+          </div>
         </div>
 
-        <div class="tiers">
+        <div class="tiers" #tierlistCapture>
           @for (tier of tierlistService.tiers(); track tier.level) {
             <div class="tier-row">
               <div class="tier-label" [style.background]="tier.color">
