@@ -13,3 +13,11 @@ public record TierListItemDto(
     Guid CompanyId,
     string TierLevel
 );
+
+public record ExportTierListRequestDto(
+    string ImageBase64
+);
+
+public record ExportResponseDto(
+    string PdfUrl
+);

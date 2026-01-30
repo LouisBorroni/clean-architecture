@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TierListes.Application.DTOs.TierList;
+using TierListes.Application.UseCases.TierLists.ExportTierList;
 using TierListes.Application.UseCases.TierLists.GetTierList;
 using TierListes.Application.UseCases.TierLists.SaveTierList;
 
@@ -53,6 +54,24 @@ public class TierListController : ControllerBase
         var result = await _mediator.Send(command);
 
         return Ok(new { success = result.Data });
+    }
+
+    [HttpPost("export")]
+    [ProducesResponseType(typeof(ExportResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> Export([FromBody] ExportTierListRequestDto request)
+    {
+        var userId = GetUserId();
+        if (userId == null)
+        {
+            return Unauthorized();
+        }
+
+        var imageData = Convert.FromBase64String(request.ImageBase64);
+        var command = new ExportTierListCommand(userId.Value, imageData);
+        var result = await _mediator.Send(command);
+
+        return Ok(new ExportResponseDto(result.Data!));
     }
 
     private Guid? GetUserId()

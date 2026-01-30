@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { Company, Tier, TierLevel } from '../models/tierlist.models';
 
 interface TierListDto {
@@ -11,6 +11,10 @@ interface TierListDto {
 interface TierListItemDto {
   companyId: string;
   tierLevel: string;
+}
+
+export interface ExportResponse {
+  pdfUrl: string;
 }
 
 @Injectable({
@@ -142,5 +146,13 @@ export class TierlistService {
     ]);
     this.unrankedCompanies.set([...this.allCompanies]);
     this.saveState();
+  }
+
+  exportPdf(imageBase64: string): Observable<ExportResponse> {
+    return this.http.post<ExportResponse>(
+      `${this.TIERLIST_API_URL}/export`,
+      { imageBase64 },
+      { withCredentials: true }
+    );
   }
 }

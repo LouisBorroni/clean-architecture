@@ -31,6 +31,22 @@ services:
     networks:
       - tierlistes_network
 
+  minio:
+    image: minio/minio:latest
+    container_name: tierlistes_minio
+    restart: always
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9001"
+    ports:
+      - "${MINIO_API_PORT}:9000"
+      - "${MINIO_CONSOLE_PORT}:9001"
+    volumes:
+      - ./minio-data:/data
+    networks:
+      - tierlistes_network
+
 networks:
   tierlistes_network:
     driver: bridge
