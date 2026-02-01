@@ -12,6 +12,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Company> Companies { get; set; }
     public DbSet<TierList> TierLists { get; set; }
     public DbSet<CompanyLogo> CompanyLogos { get; set; }
+    public DbSet<PaymentHistory> PaymentHistories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

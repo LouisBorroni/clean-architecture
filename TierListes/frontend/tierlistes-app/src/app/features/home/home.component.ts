@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { AuthService } from '../../core/services/auth.service';
 import { TierlistService } from '../../core/services/tierlist.service';
+import { PaymentService } from '../../core/services/payment.service';
 import { Company } from '../../core/models/tierlist.models';
 import html2canvas from 'html2canvas';
 
@@ -18,11 +19,17 @@ export class HomeComponent implements OnInit {
 
   authService = inject(AuthService);
   tierlistService = inject(TierlistService);
+  paymentService = inject(PaymentService);
 
   isExporting = false;
 
   ngOnInit(): void {
     this.tierlistService.loadCompanies();
+    this.paymentService.checkPaymentStatus().subscribe();
+  }
+
+  pay(): void {
+    this.paymentService.checkout();
   }
 
   logout(): void {
