@@ -1,33 +1,36 @@
-<div class="home-container">
-  <header class="header">
-    <h1>TierListes</h1>
-    <div class="user-info">
-      @if (authService.currentUser(); as user) {
-        <span class="username">{{ user.username }}</span>
-        <button class="btn-logout" (click)="logout()">Déconnexion</button>
-      }
-    </div>
-  </header>
-
-  <main class="main-content">
-    @if (!paymentService.hasPaid()) {
-      <div class="payment-banner">
-        <div class="payment-content">
-          <span class="payment-icon">&#128274;</span>
-          <div class="payment-text">
-            <strong>Débloquez la Tier List</strong>
-            <p>Payez une fois pour créer et organiser votre tier list</p>
-          </div>
-          <button class="btn-pay" (click)="pay()" [disabled]="paymentService.isLoading()">
-            {{ paymentService.isLoading() ? 'Redirection...' : 'Payer maintenant' }}
-          </button>
-        </div>
+@if (!paymentService.isChecked() || tierlistService.isLoading()) {
+  <div class="page-loader">
+    <div class="spinner"></div>
+    <p>Chargement...</p>
+  </div>
+} @else {
+  <div class="home-container">
+    <header class="header">
+      <h1>TierListes</h1>
+      <div class="user-info">
+        @if (authService.currentUser(); as user) {
+          <span class="username">{{ user.username }}</span>
+          <button class="btn-logout" (click)="logout()">Déconnexion</button>
+        }
       </div>
-    }
+    </header>
 
-    @if (tierlistService.isLoading()) {
-      <div class="loading">Chargement...</div>
-    } @else {
+    <main class="main-content">
+      @if (!paymentService.hasPaid()) {
+        <div class="payment-banner">
+          <div class="payment-content">
+            <span class="payment-icon">&#128274;</span>
+            <div class="payment-text">
+              <strong>Débloquez la Tier List</strong>
+              <p>Payez une fois pour créer et organiser votre tier list</p>
+            </div>
+            <button class="btn-pay" (click)="pay()" [disabled]="paymentService.isLoading()">
+              {{ paymentService.isLoading() ? 'Redirection...' : 'Payer maintenant' }}
+            </button>
+          </div>
+        </div>
+      }
+
       <div class="tierlist-container" [class.locked]="!paymentService.hasPaid()">
         <div class="tierlist-header">
           <h2>Ma Tier List</h2>
@@ -48,6 +51,7 @@
               <div
                 class="tier-content"
                 cdkDropList
+                cdkDropListOrientation="horizontal"
                 [id]="'tier-' + tier.level"
                 [cdkDropListData]="tier.companies"
                 [cdkDropListConnectedTo]="getConnectedLists()"
@@ -70,6 +74,7 @@
           <div
             class="unranked-list"
             cdkDropList
+            cdkDropListOrientation="horizontal"
             id="unranked"
             [cdkDropListData]="tierlistService.unrankedCompanies()"
             [cdkDropListConnectedTo]="getConnectedLists()"
@@ -85,6 +90,6 @@
           </div>
         </div>
       </div>
-    }
-  </main>
-</div>
+    </main>
+  </div>
+}

@@ -22,7 +22,8 @@ public class GetTierListQueryHandler : IRequestHandler<GetTierListQuery, Result<
 
         var dtos = tierLists.Select(tl => new TierListDto(
             tl.CompanyId,
-            tl.TierLevel
+            tl.TierLevel,
+            tl.Position
         ));
 
         return Result<IEnumerable<TierListDto>>.Success(dtos, 200);

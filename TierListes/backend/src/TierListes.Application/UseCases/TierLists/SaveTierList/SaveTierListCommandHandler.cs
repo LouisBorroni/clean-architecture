@@ -43,7 +43,8 @@ public class SaveTierListCommandHandler : IRequestHandler<SaveTierListCommand, R
             var tierList = TierList.Create(
                 request.UserId,
                 ranking.CompanyId,
-                ranking.TierLevel
+                ranking.TierLevel,
+                ranking.Position
             );
             await _tierListRepository.AddAsync(tierList, cancellationToken);
         }

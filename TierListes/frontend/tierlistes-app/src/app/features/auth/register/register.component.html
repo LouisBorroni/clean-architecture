@@ -55,7 +55,7 @@
             type="text"
             id="username"
             formControlName="username"
-            placeholder="VotreNom"
+            placeholder="Nom"
           >
         </div>
         @if (username?.invalid && username?.touched) {
@@ -83,14 +83,15 @@
             placeholder="••••••••"
           >
         </div>
-        @if (password?.invalid && password?.touched) {
-          <span class="error-text">
-            @if (password?.errors?.['required']) {
-              Le mot de passe est requis
-            } @else if (password?.errors?.['minlength']) {
-              Minimum 6 caractères
-            }
-          </span>
+        <div class="password-requirements">
+          <span [class.valid]="hasMinLength()">&#x2713; 8 caractères minimum</span>
+          <span [class.valid]="hasUppercase()">&#x2713; Une majuscule</span>
+          <span [class.valid]="hasLowercase()">&#x2713; Une minuscule</span>
+          <span [class.valid]="hasDigit()">&#x2713; Un chiffre</span>
+          <span [class.valid]="hasSpecial()">&#x2713; Un caractère spécial</span>
+        </div>
+        @if (password?.invalid && password?.touched && password?.errors?.['required']) {
+          <span class="error-text">Le mot de passe est requis</span>
         }
       </div>
 

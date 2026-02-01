@@ -26,6 +26,14 @@ public class AddCompanyLogoCommandHandler : IRequestHandler<AddCompanyLogoComman
         AddCompanyLogoCommand request,
         CancellationToken cancellationToken)
     {
+        var logoCount = await _companyLogoRepository.CountAsync(cancellationToken);
+        if (logoCount >= 10)
+        {
+            return Result<CompanyLogoDto>.Failure(
+                "Le nombre maximum de 10 logos a été atteint.", 400
+            );
+        }
+
         var existingCompany = await _companyRepository.GetByNameAsync(request.CompanyName, cancellationToken);
 
         if (existingCompany != null && existingCompany.Logo != null)
