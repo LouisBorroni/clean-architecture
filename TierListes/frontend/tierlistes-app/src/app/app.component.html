@@ -1,2 +1,9 @@
-<router-outlet></router-outlet>
-<app-cookie-consent></app-cookie-consent>
+@if (!isAppReady()) {
+  <div class="app-loader">
+    <div class="spinner"></div>
+    <p>Chargement...</p>
+  </div>
+} @else {
+  <router-outlet></router-outlet>
+  <app-cookie-consent></app-cookie-consent>
+}

@@ -19,9 +19,11 @@ export class PaymentService {
 
   private hasPaidSignal = signal<boolean>(false);
   private isLoadingSignal = signal<boolean>(false);
+  private isCheckedSignal = signal<boolean>(false);
 
   hasPaid = computed(() => this.hasPaidSignal());
   isLoading = computed(() => this.isLoadingSignal());
+  isChecked = computed(() => this.isCheckedSignal());
 
   checkout(): void {
     this.isLoadingSignal.set(true);
@@ -40,9 +42,11 @@ export class PaymentService {
     return this.http.get<PaymentStatus>(`${this.apiUrl}/status`).pipe(
       tap((status) => {
         this.hasPaidSignal.set(status.hasPaid);
+        this.isCheckedSignal.set(true);
       }),
       catchError(() => {
         this.hasPaidSignal.set(false);
+        this.isCheckedSignal.set(true);
         return of({ hasPaid: false });
       })
     );

@@ -2,7 +2,8 @@ namespace TierListes.Application.DTOs.TierList;
 
 public record TierListDto(
     Guid CompanyId,
-    string TierLevel
+    string TierLevel,
+    int Position
 );
 
 public record SaveTierListRequestDto(
@@ -11,7 +12,8 @@ public record SaveTierListRequestDto(
 
 public record TierListItemDto(
     Guid CompanyId,
-    string TierLevel
+    string TierLevel,
+    int Position
 );
 
 public record ExportTierListRequestDto(

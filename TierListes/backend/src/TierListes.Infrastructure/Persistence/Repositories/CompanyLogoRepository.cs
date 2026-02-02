@@ -25,6 +25,11 @@ public class CompanyLogoRepository : ICompanyLogoRepository
             .AnyAsync(c => c.CompanyId == companyId, cancellationToken);
     }
 
+    public async Task<int> CountAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.CompanyLogos.CountAsync(cancellationToken);
+    }
+
     public async Task AddAsync(CompanyLogo companyLogo, CancellationToken cancellationToken = default)
     {
         await _context.CompanyLogos.AddAsync(companyLogo, cancellationToken);

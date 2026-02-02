@@ -6,11 +6,13 @@ import { Company, Tier, TierLevel } from '../models/tierlist.models';
 interface TierListDto {
   companyId: string;
   tierLevel: string;
+  position: number;
 }
 
 interface TierListItemDto {
   companyId: string;
   tierLevel: string;
+  position: number;
 }
 
 export interface ExportResponse {
@@ -57,7 +59,7 @@ export class TierlistService {
   }
 
   private restoreState(companies: Company[], rankings: TierListDto[]): void {
-    const rankingMap = new Map(rankings.map(r => [r.companyId, r.tierLevel]));
+    const rankingMap = new Map(rankings.map(r => [r.companyId, { tierLevel: r.tierLevel, position: r.position }]));
 
     const tiers = this.tiers();
     tiers.forEach(tier => tier.companies = []);
@@ -65,18 +67,26 @@ export class TierlistService {
     const unranked: Company[] = [];
 
     companies.forEach(company => {
-      const tierLevel = rankingMap.get(company.id);
+      const ranking = rankingMap.get(company.id);
 
-      if (tierLevel && tierLevel !== 'unranked') {
-        const tier = tiers.find(t => t.level === tierLevel);
+      if (ranking && ranking.tierLevel !== 'unranked') {
+        const tier = tiers.find(t => t.level === ranking.tierLevel);
         if (tier) {
-          tier.companies.push(company);
+          tier.companies.push({ ...company, _position: ranking.position } as Company & { _position: number });
         } else {
           unranked.push(company);
         }
       } else {
         unranked.push(company);
       }
+    });
+
+    tiers.forEach(tier => {
+      tier.companies.sort((a: any, b: any) => (a._position ?? 0) - (b._position ?? 0));
+      tier.companies = tier.companies.map((c: any) => {
+        const { _position, ...company } = c;
+        return company as Company;
+      });
     });
 
     this.tiers.set([...tiers]);
@@ -87,10 +97,11 @@ export class TierlistService {
     const rankings: TierListItemDto[] = [];
 
     this.tiers().forEach(tier => {
-      tier.companies.forEach(company => {
+      tier.companies.forEach((company, index) => {
         rankings.push({
           companyId: company.id,
-          tierLevel: tier.level
+          tierLevel: tier.level,
+          position: index
         });
       });
     });
