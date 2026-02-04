@@ -24,3 +24,6 @@ lancer l'application :
         2 se connecter au cli avec stripe login dans powershell
         3 stripe listen --forward-to localhost:5000/api/payment/webhook pour avoir la clé webhook à placer dans le le appsettings
         4 placer les 3 clés la pk api la sk api et la clé de tarif également dans le appsettings
+
+    - note importante :
+    la liste des commits n'est pas représentative du travail de chacun, le projet à d'abord été développé sur un autre dépôt github, puis remis au propore sur celui là.
