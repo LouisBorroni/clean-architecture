@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TierListes.Application\TierListes.Application.csproj" />
     <ProjectReference Include="..\TierListes.Infrastructure\TierListes.Infrastructure.csproj" />
   </ItemGroup>
 
